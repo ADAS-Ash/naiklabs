@@ -291,7 +291,106 @@ Platforms cache the first preview they see — always validate first.
 
 ### Step 9: Update the portfolio
 
-Update the project card in `~/Documents/GitHub/naiklabs/index.html` to link to `https://PROJECT_SUBDOMAIN.naiklabs.dev`. Redeploy the main naiklabs site.
+The holding page at `~/Documents/GitHub/naiklabs/index.html` needs two additions: a **card** in the projects grid and a **detail page** section. Then redeploy.
+
+#### 9a. Add the project card
+
+Find the `<div class="projects-grid">` block. Add a new card at the end (before the closing `</div>`). Update the card number (`06`, `07`, etc.), the `onclick` target, hero style, status, and tags:
+
+```html
+<div class="project-card" onclick="showProject('PROJECT_SLUG')">
+  <div class="project-card-hero muted">
+    <!-- Hero styles: "dark" (black), "accent" (red), "muted" (grey) -->
+    <span class="card-num">06</span>
+    <span class="card-title">PROJECT_NAME</span>
+  </div>
+  <div class="project-meta">
+    <span class="project-name">PROJECT_NAME</span>
+    <span class="status">
+      <!-- Status dots: "shipped", "in-progress", "archived" -->
+      <span class="status-dot shipped"></span>Shipped
+    </span>
+  </div>
+  <p class="project-desc">PROJECT_TAGLINE</p>
+  <div class="tags">
+    <span class="tag">TECH_1</span>
+    <span class="tag">TECH_2</span>
+  </div>
+</div>
+```
+
+Also update the `<span class="section-count">` text (e.g. "5 entries" → "6 entries").
+
+#### 9b. Add the detail page
+
+Add a new detail section **after** the last `<!-- PROJECT DETAIL -->` block and **before** the `<!-- RESUME PAGE -->` comment:
+
+```html
+<!-- PROJECT DETAIL: PROJECT_NAME -->
+<div id="page-PROJECT_SLUG" class="page">
+  <a class="back-link" onclick="showPage('projects')">&larr;&nbsp; All Projects</a>
+  <div class="detail-hero muted">
+    <!-- Match the hero style from the card above -->
+    <span class="card-num">06</span>
+    <span class="card-title">PROJECT_NAME</span>
+  </div>
+  <div class="detail-status">
+    <span class="status"><span class="status-dot shipped"></span>Shipped</span>
+  </div>
+  <h2 class="detail-title">PROJECT_NAME</h2>
+  <p class="detail-subtitle">PROJECT_TAGLINE</p>
+  <div class="detail-section-label">What it does</div>
+  <p class="detail-body">WHAT_IT_DOES — 1-2 paragraphs.</p>
+  <div class="detail-section-label">Why I built it</div>
+  <p class="detail-body">WHY_I_BUILT_IT — 1-2 paragraphs.</p>
+  <div class="detail-section-label screens-header">
+    <span>Screens</span><span class="section-count">N views</span>
+  </div>
+  <div class="screens-grid">
+    <div><div class="screen-slot">Image Slot</div><p class="screen-label">View 1</p></div>
+    <div><div class="screen-slot">Image Slot</div><p class="screen-label">View 2</p></div>
+  </div>
+  <div class="info-table">
+    <div class="info-row"><span class="info-label">Status</span><span class="info-value">Shipped</span></div>
+    <div class="info-row"><span class="info-label">Year</span><span class="info-value">2026</span></div>
+    <div class="info-row"><span class="info-label">Visibility</span>
+      <span class="info-value">Public</span>
+      <!-- Use "Private" if no public site -->
+    </div>
+    <div class="info-row"><span class="info-label">Source</span>
+      <span class="info-value">
+        <!-- Public repo: -->
+        <a href="https://github.com/ADAS-Ash/PROJECT_SLUG" target="_blank" rel="noopener">github.com/ADAS-Ash/PROJECT_SLUG</a>
+        <!-- Private repo: just text "Private repository" -->
+      </span>
+    </div>
+  </div>
+  <div class="tags" style="margin-top:20px">
+    <span class="tag">TECH_1</span>
+    <span class="tag">TECH_2</span>
+  </div>
+  <!-- Public project with a live site: -->
+  <a class="cta-btn" href="https://PROJECT_SUBDOMAIN.naiklabs.dev" target="_blank" rel="noopener">Visit PROJECT_NAME</a>
+  <!-- Private project: -->
+  <!-- <div class="cta-btn private">Private Repository</div> -->
+</div>
+```
+
+#### 9c. Redeploy the main site
+
+```bash
+cd ~/Documents/GitHub/naiklabs
+npx --yes wrangler@latest pages deploy . --project-name naiklabs --commit-dirty=true
+```
+
+#### Checklist
+
+- [ ] Card number is sequential and unique
+- [ ] `onclick` id matches the detail section's `id="page-..."` (both use `PROJECT_SLUG`)
+- [ ] Section count updated ("N entries")
+- [ ] Detail section placed before `<!-- RESUME PAGE -->`
+- [ ] CTA button points to the live subdomain (or shows "Private Repository")
+- [ ] Main site redeployed
 
 ---
 
