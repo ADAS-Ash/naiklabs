@@ -107,7 +107,7 @@ Create `index.html` in the project directory. Every project page follows this st
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PROJECT_NAME</title>
+  <title>PROJECT_NAME — by NaikLabs</title>
 
   <!-- OG tags — update after generating preview.png -->
   <meta property="og:title"       content="PROJECT_NAME">
@@ -149,13 +149,14 @@ Create `index.html` in the project directory. Every project page follows this st
     .tag { font-family: var(--font-mono); font-size: 12px; padding: 4px 12px; border: 1px solid var(--border); border-radius: 4px; color: var(--text-muted); }
     footer { margin-top: 64px; padding-top: 20px; border-top: 1px solid var(--border); text-align: center; font-size: 13px; color: var(--text-muted); }
     footer a { color: var(--text-muted); text-decoration: underline; text-underline-offset: 3px; }
+    .powered { font-size: 10px; font-weight: 400; color: var(--text-muted); margin-left: 6px; }
     @media (max-width: 480px) { .steps { grid-template-columns: 1fr; } .container { padding: 32px 16px 48px; } }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <h1>PROJECT_NAME</h1>
+      <h1>PROJECT_NAME<span class="powered">by NaikLabs</span></h1>
       <p>PROJECT_TAGLINE</p>
     </div>
     <section>
@@ -175,7 +176,7 @@ Create `index.html` in the project directory. Every project page follows this st
       <span class="tag">TECH_1</span>
       <span class="tag">TECH_2</span>
     </div>
-    <footer><p>A <a href="https://naiklabs.dev">Naik Labs</a> project</p></footer>
+    <footer><p>Powered by <a href="https://naiklabs.dev">NaikLabs</a></p></footer>
   </div>
 </body>
 </html>
@@ -289,11 +290,41 @@ Platforms cache the first preview they see — always validate first.
 
 ---
 
-### Step 9: Update the portfolio
+### Step 9: Verify NaikLabs branding
+
+Every page deployed under `naiklabs.dev` must carry **NaikLabs** branding in three places:
+
+| Location | What to check | Example |
+|---|---|---|
+| **Page title** | `<title>` ends with `— by NaikLabs` | `<title>Meal Planner — by NaikLabs</title>` |
+| **Header / logo** | Small "by NaikLabs" label next to the project name | `<span class="powered">by NaikLabs</span>` |
+| **Footer** | "Powered by NaikLabs" with a link to naiklabs.dev | `Powered by <a href="https://naiklabs.dev">NaikLabs</a>` |
+
+```bash
+PAGE=$(curl -s https://PROJECT_SUBDOMAIN.naiklabs.dev)
+
+echo "$PAGE" | grep -qi "<title>.*by NaikLabs" \
+  && echo "✓ Title branding" \
+  || echo "✗ MISSING — <title> must end with '— by NaikLabs'"
+
+echo "$PAGE" | grep -qi 'class="powered".*by NaikLabs' \
+  && echo "✓ Header branding" \
+  || echo "✗ MISSING — header needs <span class=\"powered\">by NaikLabs</span>"
+
+echo "$PAGE" | grep -qi "powered by.*naiklabs" \
+  && echo "✓ Footer branding" \
+  || echo "✗ MISSING — footer needs 'Powered by NaikLabs'"
+```
+
+**Do not deploy if any branding check fails.**
+
+---
+
+### Step 10: Update the portfolio
 
 The holding page at `~/Documents/GitHub/naiklabs/index.html` needs two additions: a **card** in the projects grid and a **detail page** section. Then redeploy.
 
-#### 9a. Add the project card
+#### 10a. Add the project card
 
 Find the `<div class="projects-grid">` block. Add a new card at the end (before the closing `</div>`). Update the card number (`06`, `07`, etc.), the `onclick` target, hero style, status, and tags:
 
@@ -321,7 +352,7 @@ Find the `<div class="projects-grid">` block. Add a new card at the end (before 
 
 Also update the `<span class="section-count">` text (e.g. "5 entries" → "6 entries").
 
-#### 9b. Add the detail page
+#### 10b. Add the detail page
 
 Add a new detail section **after** the last `<!-- PROJECT DETAIL -->` block and **before** the `<!-- RESUME PAGE -->` comment:
 
@@ -376,7 +407,7 @@ Add a new detail section **after** the last `<!-- PROJECT DETAIL -->` block and 
 </div>
 ```
 
-#### 9c. Redeploy the main site
+#### 10c. Redeploy the main site
 
 ```bash
 cd ~/Documents/GitHub/naiklabs
@@ -394,7 +425,7 @@ npx --yes wrangler@latest pages deploy . --project-name naiklabs --commit-dirty=
 
 ---
 
-### Step 10: Subsequent deploys
+### Step 11: Subsequent deploys
 
 ```bash
 cd ~/Documents/GitHub/naiklabs/projects/PROJECT_SLUG
@@ -909,6 +940,7 @@ Stagger list items by ~11 frames. Nothing under 24px at this resolution.
 - [ ] Set up custom subdomain
 - [ ] Run `status.sh`
 - [ ] Validate OG on LinkedIn Post Inspector
+- [ ] Verify NaikLabs branding (title, header logo, footer)
 - [ ] Update portfolio card on naiklabs.dev
 
 ### If the project sends email
