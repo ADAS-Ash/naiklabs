@@ -413,6 +413,7 @@ npx --yes wrangler@latest pages deploy . --project-name PROJECT_SUBDOMAIN-naikla
 | Mindle | `mindle.naiklabs.dev` | `mindle-naiklabs` | Not started |
 | Puffer Properties | `pufferproperties.co.uk` | *(separate)* | Live |
 | Meal Planner | `mealplanner.naiklabs.dev` | `mealplanner-naiklabs` | Not started |
+| GPX Exporter | `gpxexporter.naiklabs.dev` | `gpxexporter-naiklabs` | Live |
 | HA House Bible | — | — | Private, no public page |
 
 ---

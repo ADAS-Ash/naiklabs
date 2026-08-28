@@ -686,7 +686,7 @@
 
       <div class="section-header">
         <div><span class="section-num">01</span><span class="section-title">Projects</span></div>
-        <span class="section-count">5 entries</span>
+        <span class="section-count">6 entries</span>
       </div>
 
       <div class="projects-grid">
@@ -753,6 +753,18 @@
           </div>
           <p class="project-desc">Home Assistant configuration, versioned and documented.</p>
           <div class="tags"><span class="tag">YAML</span><span class="tag">Home Assistant</span></div>
+        </div>
+        <div class="project-card" onclick="showProject('gpx-exporter')">
+          <div class="project-card-hero dark">
+            <span class="card-num">06</span>
+            <span class="card-title">GPX Exporter</span>
+          </div>
+          <div class="project-meta">
+            <span class="project-name">GPX Exporter</span>
+            <span class="status"><span class="status-dot shipped"></span>Shipped</span>
+          </div>
+          <p class="project-desc">Paste a Strava or Komoot URL and download the GPX file.</p>
+          <div class="tags"><span class="tag">Next.js</span><span class="tag">Cloudflare Workers</span><span class="tag">Strava API</span></div>
         </div>
       </div>
     </div>
@@ -913,6 +925,39 @@
       </div>
       <div class="tags" style="margin-top:20px"><span class="tag">YAML</span><span class="tag">Home Assistant</span></div>
       <div class="cta-btn private">Private Repository</div>
+    </div>
+
+    <!-- PROJECT DETAIL: GPX EXPORTER -->
+    <div id="page-gpx-exporter" class="page">
+      <a class="back-link" onclick="showPage('projects')">&larr;&nbsp; All Projects</a>
+      <div class="detail-hero dark">
+        <span class="card-num">06</span>
+        <span class="card-title">GPX Exporter</span>
+      </div>
+      <div class="detail-status">
+        <span class="status"><span class="status-dot shipped"></span>Shipped</span>
+      </div>
+      <h2 class="detail-title">GPX Exporter</h2>
+      <p class="detail-subtitle">Paste a Strava or Komoot URL and download the GPX file.</p>
+      <div class="detail-section-label">What it does</div>
+      <p class="detail-body">Strava, Komoot and Garmin make it surprisingly hard to get a plain GPX file out. GPX Exporter takes a URL from any of these services and hands back a downloadable GPX — no clicking through menus, no premium tier required for basic exports.</p>
+      <div class="detail-section-label">Why I built it</div>
+      <p class="detail-body">Every time I wanted to share a route or load it into another app, the export was buried three menus deep or locked behind a paywall. One URL in, one file out.</p>
+      <div class="detail-section-label screens-header"><span>Screens</span><span class="section-count">2 views</span></div>
+      <div class="screens-grid">
+        <div><div class="screen-slot">Image Slot</div><p class="screen-label">URL input</p></div>
+        <div><div class="screen-slot">Image Slot</div><p class="screen-label">Download</p></div>
+      </div>
+      <div class="info-table">
+        <div class="info-row"><span class="info-label">Status</span><span class="info-value">Shipped</span></div>
+        <div class="info-row"><span class="info-label">Year</span><span class="info-value">2026</span></div>
+        <div class="info-row"><span class="info-label">Visibility</span><span class="info-value">Public</span></div>
+        <div class="info-row"><span class="info-label">Source</span>
+          <span class="info-value"><a href="https://github.com/ADAS-Ash/gpx-exporter" target="_blank" rel="noopener">github.com/ADAS-Ash/gpx-exporter</a></span>
+        </div>
+      </div>
+      <div class="tags" style="margin-top:20px"><span class="tag">Next.js</span><span class="tag">Cloudflare Workers</span><span class="tag">Strava API</span></div>
+      <a class="cta-btn" href="https://gpxexporter.naiklabs.dev" target="_blank" rel="noopener">Visit GPX Exporter</a>
     </div>
 
     <!-- RESUME PAGE -->
