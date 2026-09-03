@@ -822,6 +822,56 @@ For early-stage projects, a donation link is more appropriate than ads on a page
 
 ---
 
+## Optional: Demo GIFs (for portfolio + README)
+
+Animated GIF demos show a project in action without requiring the viewer to visit the live site. Used on the naiklabs.dev portfolio detail pages and in project READMEs.
+
+### Approach: HTML artifact → screen recording → GIF
+
+1. **Build an auto-cycling HTML presentation** as a Claude artifact. Structure it as a single-viewport slideshow that cycles through the project's key states:
+   - Title / intro
+   - Problem statement
+   - Trigger or activation (e.g. cron fires)
+   - Pipeline or process animation
+   - Terminal / log output (lines appearing one by one)
+   - Results or output
+   - Notification (email, SMS, push)
+   - CTA with link to live site
+
+2. **Design the presentation:**
+   - Full-viewport scenes, one visible at a time
+   - Auto-advance with per-scene durations (3–6 seconds each)
+   - Nav dots on the right edge for manual navigation
+   - Replay button at bottom-right
+   - Keyboard support (arrow keys, spacebar)
+   - Animations within scenes (pipeline steps lighting up, log lines appearing, table rows sliding in)
+   - Use the project's own data and terminology — not generic placeholders
+
+3. **Record with Chrome extension GIF creator:**
+   - Open the artifact URL in Chrome
+   - Start recording, click Replay, capture screenshots through the full cycle
+   - Export with overlays disabled (`showClickIndicators: false`, `showActionLabels: false`, `showProgressBar: false`, `showWatermark: false`)
+   - Quality setting: 5 (lower = better quality)
+
+4. **Add to the project repo** as `<project>-demo.gif` and reference from the portfolio detail page.
+
+### Style guidelines
+
+- Dark-first palette works best for GIFs (less banding, smaller file size)
+- Use the project's own accent colour (parkrun green, crossword blue, etc.)
+- Monospace font for terminal/data scenes, display serif for titles
+- Keep total cycle under 40 seconds
+- Target under 1 MB for the GIF (reduce frame count or dimensions if needed)
+
+### Existing demos
+
+| Project | Demo file | Artifact |
+|---|---|---|
+| Inaugural Parkrun Scanner | `parkrun-scanner-demo.gif` (382 KB) | Auto-cycling 8-scene presentation |
+| Crossword Generator | `crossword-demo.gif` (1.4 MB) | Screen recording of puzzle flow |
+
+---
+
 ## Optional: Launch videos (Remotion)
 
 ### Setup
