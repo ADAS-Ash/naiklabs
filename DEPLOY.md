@@ -445,6 +445,7 @@ npx --yes wrangler@latest pages deploy . --project-name PROJECT_SUBDOMAIN-naikla
 | Puffer Properties | `pufferproperties.co.uk` | *(separate)* | Live |
 | Meal Planner | `mealplanner.naiklabs.dev` | `mealplanner-naiklabs` | Not started |
 | GPX Exporter | `gpxexporter.naiklabs.dev` | `gpxexporter-naiklabs` | Live |
+| Crossword Generator | — | Docker self-hosted | Live (Docker) |
 | HA House Bible | — | — | Private, no public page |
 
 ---
