@@ -795,30 +795,223 @@ Add GA4 alongside the Ads tag — one gtag snippet, two `config` lines:
 
 ## Optional: Monetisation (earning from traffic)
 
-### Google AdSense
+A tiered approach — stack multiple revenue streams per project. Not every tier fits every project; pick what's natural for each.
 
-For content-heavy pages with traffic. Add to `<head>`:
+### NaikLabs AdSense account
+
+**Publisher ID:** `ca-pub-1163230166986964`
+
+One account covers all `*.naiklabs.dev` subdomains. Each subdomain needs Google to crawl and approve it, but the publisher ID is the same everywhere.
+
+#### Per-project setup
+
+**1. Add to the project's `<head>`:**
 
 ```html
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+<meta name="google-adsense-account" content="ca-pub-1163230166986964">
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1163230166986964"
   crossorigin="anonymous"></script>
 ```
 
-**Requirements for approval:** substantial original content, privacy policy page, `ads.txt` at domain root, no copyrighted content. Can take days to weeks.
+**2. Add `ads.txt` at the domain/project root** (Vite: `public/ads.txt`, static sites: root):
 
-**Performance impact:** AdSense significantly slows page load. Consider only for content-heavy pages, not landing pages.
+```
+google.com, pub-1163230166986964, DIRECT, f08c47fec0942fa0
+```
 
-### Alternatives
+**3. Verify it's accessible:** `curl https://SUBDOMAIN.naiklabs.dev/ads.txt`
+
+**4. Cloudflare note:** If AdSense verification fails, the Cloudflare challenge page may be blocking Google's crawler. In Cloudflare dashboard → Security → WAF, add a rule to allow user agents containing `Googlebot` or `Mediapartners-Google`.
+
+#### Ad placement guidelines
+
+| Position | Format | When to use |
+|---|---|---|
+| Below main form/input | Horizontal banner | Before results load |
+| Sidebar (desktop only) | Rectangle (300x250) | Alongside content |
+| Below results/content | Horizontal banner | After the user has engaged |
+
+Never place ads on or over interactive content. Hide sidebar ads on mobile.
+
+#### Performance impact
+
+AdSense adds ~200-400ms to page load. Only add it to pages where users spend time (puzzle solvers, tools, readers), not landing pages or portfolio pages.
+
+### Tier 1: Donations (zero effort, immediate)
+
+Add a "Support this project" link. Best for projects with engaged users who come back.
+
+| Platform | Payout | Setup |
+|---|---|---|
+| **Buy Me a Coffee** | Instant to bank | [buymeacoffee.com/naiklabs](https://buymeacoffee.com/naiklabs) |
+| **Ko-fi** | Instant via PayPal/Stripe | Alternative if BMC isn't available in a region |
+| **GitHub Sponsors** | Monthly | Good for open-source repos |
+
+**NaikLabs BMC URL:** `https://buymeacoffee.com/naiklabs`
+
+#### Where to place donation CTAs
+
+1. **Footer** — always-visible, low-friction pill button
+2. **During loading/waiting** — user has dead time, prime moment to ask
+3. **Post-completion banner** — user just got value, natural gratitude moment
+4. **README** — for developer-facing projects
+
+#### Implementation pattern (React)
+
+The crossword-generator has reusable components: `SupportBanner.jsx` (post-completion), `LoadingOverlay.jsx` (during wait), and a footer button. Copy and adapt the pattern.
+
+### Tier 2: Amazon Affiliates (contextual product recommendations)
+
+Earn 1-4% commission by recommending products relevant to what the user is doing. The key is relevance — recommend things the user would naturally buy.
+
+#### Setup
+
+1. Sign up at [affiliate-program.amazon.co.uk](https://affiliate-program.amazon.co.uk/) (UK) or [affiliate-program.amazon.com](https://affiliate-program.amazon.com/) (US)
+2. Get your Associates tag (e.g. `naiklabs-21`)
+3. Build links using the format: `https://www.amazon.co.uk/dp/ASIN?tag=naiklabs-21`
+
+#### Per-project affiliate ideas
+
+| Project | Products to recommend | Placement |
+|---|---|---|
+| **Crossword Generator** | Crossword puzzle books, pen sets, crossword dictionaries, desk pads, puzzle magazines | Post-completion banner: "Enjoyed this? Try these puzzle books" |
+| **Inaugural Parkrun** | Running shoes, running gels/nutrition, GPS watches, running belts, hi-vis vests, foam rollers | Results page: "Gear up for your first parkrun" |
+| **Meal Planner** | Kitchen scales, meal prep containers, recipe books, spice sets, slow cookers | After generating a plan: "Stock up for the week" |
+| **GPX Exporter** | GPS watches (Garmin, Coros), bike computers, phone mounts, running headphones | Near export/download: "Track your next adventure" |
+
+#### Implementation pattern
+
+A simple `AffiliateBar` component — shows 2-3 product cards after the user has received value. Keep it clearly labelled ("We may earn from purchases") for FTC/ASA compliance.
+
+```jsx
+// Minimal affiliate link component
+function AffiliateLink({ href, title, context }) {
+  return (
+    <a href={href} target="_blank" rel="noopener sponsored">
+      {title}
+    </a>
+  );
+}
+```
+
+#### Compliance
+
+- **UK (ASA):** Must label as "ad" or "affiliate link"
+- **US (FTC):** Must disclose the affiliate relationship
+- Add a one-liner near affiliate links: *"As an Amazon Associate, NaikLabs earns from qualifying purchases."*
+- Add this to your privacy policy page
+
+#### Revenue expectations
+
+- Commission: 1-4% depending on category (books ~4%, electronics ~1-3%)
+- Cookie window: 24 hours (if user buys anything within 24h, you earn)
+- Realistic monthly: $5-50 at modest traffic levels, but compounds across projects
+
+### Tier 3: BYOK — Bring Your Own Key (cost elimination)
+
+For AI-powered projects where each request costs inference money. Users provide their own API keys so generation costs nothing to you.
+
+**Already implemented in:** Crossword Generator
+
+#### Pattern
+
+- Frontend: Settings modal with API key inputs, stored in `localStorage` only
+- Backend: Accept `X-User-API-Key` and `X-User-Provider` headers, use user's key for that request
+- Rate limit free-tier users (e.g. 5/day), unlimited for BYOK
+- Never log or persist user keys server-side
+
+#### Rate limiting as funnel
+
+Rate limiting naturally drives heavy users toward BYOK or donations:
+
+```
+Free user hits limit → Message: "You've used your 5 free puzzles today.
+  → Add your own API key for unlimited access (⚙️ Settings)
+  → Or support us to keep the free tier running (☕ Buy Me a Coffee)"
+```
+
+### Tier 4: Newsletter with ad marketplace (passive, scales)
+
+A weekly or biweekly email digest with automatically-filled ad slots. The newsletter platform handles sponsor matching — you just write content.
+
+| Platform | Built-in ads | Free tier | Best for |
+|---|---|---|---|
+| **Beehiiv** | Ad marketplace (auto-matched sponsors) | 2,500 subscribers | Best ad revenue |
+| **ConvertKit** | Sponsor network | 10,000 subscribers | Creator-focused |
+| **Buttondown** | Sponsor slots | 100 subscribers | Minimal, dev-friendly |
+
+#### Per-project newsletter ideas
+
+| Project | Newsletter concept | Frequency |
+|---|---|---|
+| **Crossword Generator** | "Puzzle of the Week" — a themed crossword + fun facts | Weekly |
+| **Inaugural Parkrun** | "New parkruns this month" — upcoming inaugural events | Monthly |
+| **Meal Planner** | "This week's meal plan" — seasonal recipes + shopping list | Weekly |
+
+#### Email ad equivalents (the "AdSense for email" question)
+
+There's no Google AdSense for email. The equivalents are:
+
+| Service | How it works | Revenue model |
+|---|---|---|
+| **Beehiiv Ad Network** | Auto-inserts sponsor blocks in your newsletter | Per-open, per-click |
+| **Swapstack** | Marketplace connecting writers with advertisers | Per-placement deals |
+| **SparkLoop** | Get paid when you recommend other newsletters | Per-referral |
+| **Paved** | Premium newsletter ad marketplace | CPM-based |
+
+Beehiiv is the easiest — sign up, enable the ad network, and they fill slots in your emails automatically. You earn per-open and per-click.
+
+### Tier 5: Premium tier (recurring revenue)
+
+A paid subscription that removes ads, lifts rate limits, and adds features. Implement with Stripe via Cloudflare Functions.
+
+| Feature | Free | Premium |
+|---|---|---|
+| Puzzles per day | 5 | Unlimited |
+| Ads | Yes | No |
+| PDF export | No | Yes |
+| Saved puzzle history | No | Yes |
+| Priority generation | No | Yes |
+
+#### Pricing guidance
+
+- **$3-5/month** or **$30-50/year** for utility tools
+- Annual discount (2 months free) drives commitment
+- Stripe Checkout handles the payment page — no card form on your site
+
+#### Implementation
+
+Use Stripe Checkout (redirect-based, no card fields on your site):
+
+1. Create products/prices in Stripe Dashboard
+2. Cloudflare Function creates a Checkout Session and redirects
+3. Webhook Function receives `checkout.session.completed`, stores subscription in D1/KV
+4. Frontend checks subscription status via API, conditionally shows ads/limits
+
+### Revenue stack per project
+
+| Revenue stream | Setup effort | Monthly revenue (est.) | Best at |
+|---|---|---|---|
+| Donations (BMC) | 1 hour | $5-30 | Any traffic |
+| AdSense | 2 hours + approval wait | $10-100 | 1k+ monthly visits |
+| Amazon Affiliates | 2-3 hours | $5-50 | Users in buying mindset |
+| BYOK | 4-6 hours | Saves $10-50 in costs | AI-powered projects |
+| Newsletter + ads | 4-6 hours + ongoing content | $20-200 | 500+ subscribers |
+| Premium (Stripe) | 1-2 days | $50-500 | Engaged repeat users |
+
+**Recommended order:** Donations → AdSense → Affiliates → BYOK (if applicable) → Newsletter → Premium. Each tier builds on the traffic and engagement of the previous ones.
+
+### Ad network alternatives to AdSense
 
 | Service | Min traffic | Payout threshold | Notes |
 |---|---|---|---|
 | **Carbon Ads** | Developer audience | Via network | Clean single-ad format, good for dev tools |
 | **Media.net** | None | $100 | Yahoo/Bing contextual ads |
-| **Buy Me a Coffee / Ko-fi** | None | None | Donation link, zero effort |
-| **GitHub Sponsors** | None | None | For open source projects |
-| **Stripe** | None | Configurable | One-off or subscription via Cloudflare Functions |
+| **EthicalAds** | Developer audience | $50 | Privacy-focused, no tracking |
+| **Ezoic** | None (was 10k/mo) | $20 | AI-optimized ad placement |
+| **Monumetric** | 10k page views/mo | Net-60 | Higher RPM than AdSense |
 
-For early-stage projects, a donation link is more appropriate than ads on a page with 50 visitors.
+For early-stage projects, donations + affiliate links are more appropriate than ads on a page with 50 visitors. Add AdSense once a project consistently gets 1k+ monthly visits.
 
 ---
 
